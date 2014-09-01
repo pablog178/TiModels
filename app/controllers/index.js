@@ -1,5 +1,7 @@
 function init(){
-	var user = Alloy.createCollection('user');
+	var user = Alloy.createModel('user');
+
+	user.save();
 
 	$.window.open();
 };

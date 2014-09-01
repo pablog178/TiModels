@@ -22,40 +22,42 @@ var tiModel = {
 		 */
 		set : function(values, opts){
 			console.log("[modelBase] - model.set - values: " + JSON.stringify(values) + ' - opts: ' + JSON.stringify(opts));
-			for(var name in values){
-				var type = this.config.columns[name] ? this.config.columns[name] : '';
-				switch(type){
-					case 'TEXT':
-					case 'VARCHAR':
-					case 'CHAR':
-						values[name] = '' + (values[name] || '');
+			for(var fieldName in values){
+				var type = this.config.columns[fieldName] ? this.config.columns[fieldName] : '';
+				type = type.split(/\s+/)[0];
+				var newValue = values[fieldName];
+				switch(type.toLowerCase()){
+					case 'text':
+					case 'varchar':
+					case 'char':
+						values[fieldName] = '' + (newValue || '');
 						break;
-					case 'INTEGER':
-					case 'INT':
-					case 'TINYINT':
-					case 'SMALLINT':
-					case 'BIGINT':
-						values[name] = parseInt(values[name]) || 0;
+					case 'integer':
+					case 'int':
+					case 'tinyint':
+					case 'smallint':
+					case 'bigint':
+						values[fieldName] = parseInt(newValue) || 0;
 						break;
-					case 'REAL':
-					case 'FLOAT':
-					case 'DECIMAL':
-					case 'NUMBER':
-						values[name] = parseFloat(values[name]) || 0;
+					case 'real':
+					case 'float':
+					case 'decimal':
+					case 'number':
+						values[fieldName] = parseFloat(newValue) || 0;
 						break;
-					case 'BOOL':
-					case 'BOOLEAN':
-						values[name] = Boolean(values[name]);
+					case 'bool':
+					case 'boolean':
+						values[fieldName] = Boolean(newValue);
 						break;
-					case 'DATE':
-					case 'DATETIME':
-						if(!moment.isMoment(values[name])){
-							values[name] = new moment(values[name]);
+					case 'date':
+					case 'datetime':
+						if(!moment.isMoment(newValue)){
+							values[fieldName] = new moment(newValue || undefined);
 						}
 						break;
 				}
 
-				if(this.get(name) !== values[name] && name !== '_updated'){
+				if(this.get(fieldName) !== newValue && fieldName !== '_updated'){
 					values._updated = 1;
 				}
 			}

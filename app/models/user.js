@@ -1,10 +1,17 @@
 var tiModel = require('tiModel');
+var moment = require('alloy/moment');
 
 exports.definition = {
 	config: {
 		columns : {
 			'firstName' : 'TEXT',
-			'lastName' : 'TEXT'
+			'lastName' 	: 'TEXT',
+			'bornDate' 	: 'DATE'
+		},
+		defaults : {
+			'firstName' : '',
+			'lastName' 	: '',
+			'bornDate' 	: new moment()
 		},
 		adapter: {
 			type: "sql",
