@@ -1,5 +1,6 @@
-function doClick(e) {
-    alert($.label.text);
-}
+function init(){
+	var user = Alloy.createCollection('user');
 
-$.index.open();
+	$.window.open();
+};
+init();
