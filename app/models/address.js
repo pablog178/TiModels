@@ -1,31 +1,14 @@
 var tiModel = require('tiModel');
-var moment = require('alloy/moment');
-
 exports.definition = {
 	config: {
 		columns : {
-			'firstName' : 'TEXT',
-			'lastName' 	: 'TEXT',
-			'bornDate' 	: 'DATE'
+			'street' : 'TEXT'
 		},
 		defaults : {
-			'firstName' : '',
-			'lastName' 	: '',
-			'bornDate' 	: new moment()
-		},
-		relations : {
-			'physicalAddress' : {
-				type : '1:1',
-				model : 'address'
-			},
-			'mailingAddress' : {
-				type : '1:1',
-				model : 'address'
-			}
+			'street' : 'Adress 123'
 		},
 		adapter: {
-			type: "tiModelSync",
-			collection_name: "user"
+			collection_name: "address"
 		}
 	},
 	extendModel: function(Model) {
