@@ -14,7 +14,7 @@ exports.definition = {
 			'bornDate' 	: new moment()
 		},
 		adapter: {
-			type: "sql",
+			type: "tiModelSync",
 			collection_name: "user"
 		}
 	},

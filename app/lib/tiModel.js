@@ -98,33 +98,6 @@ var tiModel = {
 			_.extend(defaultValues, defaultRelations);
 
 			return defaultValues;
-		},
-		/**
-		 * Transforms the current's model data to be saved into an SQLite DB. based on the 
-		 * same data types as defined in {@function set set}
-		 */
-		save : function(attrs, opts){
-			var attrs = attrs || this.toJSON();
-			var columns = this.config.columns || {};
-
-			for(var name in attrs){
-				var columnType = columns[name];
-				switch(columnType){
-					case 'BOOL':
-					case 'BOOLEAN':
-						attrs[name] = 0 + attrs[name];
-						break;
-					case 'DATE':
-					case 'DATETIME':
-						attrs[name] = attrs[name].unix();
-				}
-				
-			}
-
-			console.log("[modelBase] - model.save - attrs: " + JSON.stringify(attrs));
-
-			return Backbone.Model.prototype.save.call(this, attrs, opts);
-
 		}
 	},
 	collectionBase : {
