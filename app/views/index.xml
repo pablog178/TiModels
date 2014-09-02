@@ -1,5 +1,11 @@
 <Alloy>
-	<Window id="window">
-		<Label id="label">Hello, World</Label>
-	</Window>
+	<NavigationWindow id="navigationWindow">
+		<Window id="window">
+			<View class="loginContainer">
+				<TextField id="usernameField" class="loginField" />
+				<TextField id="passwordField" class="loginField" />
+				<Button id="loginButton" />
+			</View>
+		</Window>
+	</NavigationWindow>
 </Alloy>

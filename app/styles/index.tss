@@ -1,5 +1,31 @@
 '#window' : {
 	width : Ti.UI.FILL,
 	height : Ti.UI.FILL,
-	backgroundColor : '#FFF'
+	backgroundColor : '#FFF',
+	title : 'Login',
+	navBarHidden : false
+},
+'#usernameField' : {
+	hintText : 'Username'
+},
+'#passwordField' : {
+	hintText : 'Password',
+	passwordMask : true
+},
+'#loginButton' : {
+	top : 10,
+	width : '50%',
+	height : 30,
+	title : 'Login'
+},
+'.loginContainer' : {
+	width : Ti.UI.FILL,
+	height : Ti.UI.SIZE,
+	layout : 'vertical'
+},
+'.loginField' : {
+	top : 10,
+	width : '75%',
+	height : 30,
+	textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
 }
