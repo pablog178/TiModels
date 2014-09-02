@@ -4,31 +4,24 @@ var moment = require('alloy/moment');
 exports.definition = {
 	config: {
 		columns : {
-			'username' 	: 'TEXT',
-			'firstName' : 'TEXT',
-			'lastName' 	: 'TEXT',
-			'bornDate' 	: 'DATE'
+			created 	: 'DATETIME',
+			modified 	: 'DATETIME',
+			title 		: 'TEXT'
 		},
 		defaults : {
-			'username' 	: null,
-			'firstName' : '',
-			'lastName' 	: '',
-			'bornDate' 	: new moment()
+			created 	: new moment(),
+			modified 	: null,
+			title 		: ''
 		},
 		relations : {
 			'notes' : {
 				type 	: '1:n',
 				model 	: 'note'
-			},
-			'lists' : {
-				type 	: '1:n',
-				model 	: 'list'
 			}
 		},
 		adapter: {
 			type 			: "tiModelSync",
-			collection_name	: "user",
-			idAttribute 	: 'username'
+			collection_name	: "list"
 		}
 	},
 	extendModel: function(Model) {
