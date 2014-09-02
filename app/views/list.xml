@@ -1,0 +1,5 @@
+<Alloy>
+	<Window id="window">
+		<ListView id="notesList" />
+	</Window>
+</Alloy>

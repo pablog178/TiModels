@@ -1,0 +1,10 @@
+<Alloy>
+	<Window id="window">
+		<RightNavButton platform="ios">
+			<Button id="editButton" />
+		</RightNavButton>
+		<TextField id="titleField" class="noteField" />
+		<TextArea id="messageField" />
+		<TextField id="createdField" class="noteField" />
+	</Window>
+</Alloy>

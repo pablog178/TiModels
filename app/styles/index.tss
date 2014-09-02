@@ -1,9 +1,5 @@
 '#window' : {
-	width : Ti.UI.FILL,
-	height : Ti.UI.FILL,
-	backgroundColor : '#FFF',
-	title : 'Login',
-	navBarHidden : false
+	title : 'Login'
 },
 '#usernameField' : {
 	hintText : 'Username'
@@ -18,7 +14,7 @@
 	height : 30,
 	title : 'Login'
 },
-'.loginContainer' : {
+'.containerView' : {
 	width : Ti.UI.FILL,
 	height : Ti.UI.SIZE,
 	layout : 'vertical'

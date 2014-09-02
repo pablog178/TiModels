@@ -1,0 +1,9 @@
+'#window' : {
+	width : Ti.UI.FILL,
+	height : Ti.UI.FILL,
+	backgroundColor : '#FFF'
+},
+'#notesList' : {
+	width : Ti.UI.FILL,
+	height : Ti.UI.FILL
+}

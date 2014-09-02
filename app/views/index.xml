@@ -1,7 +1,7 @@
 <Alloy>
 	<NavigationWindow id="navigationWindow">
 		<Window id="window">
-			<View class="loginContainer">
+			<View class="containerView">
 				<TextField id="usernameField" class="loginField" />
 				<TextField id="passwordField" class="loginField" />
 				<Button id="loginButton" />
