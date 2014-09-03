@@ -115,6 +115,8 @@ var tiModel = {
 				opts.query = buildQuery();
 				this._buildingQuery = false;
 				this._queryInfo = {};
+			} else if(opts.select || opts.join || opts.from || opts.where || opts.groupBy || opts.orderBy || opts.limit){
+				//TODO lol
 			}
 
 			var fetchBackbone = Backbone.Model.prototype.fetch.call(this, opts);
@@ -161,43 +163,63 @@ var tiModel = {
 			return this;
 		},
 		/**
-		 * Declares the select statements for the query.
-		 * If select() is being called multiple times, multiple select statements will be added
-		 * @param statements {Array} array of strings to use in the select statement
-		 * @param statements {String} statement to add in the select statement
+		 * Declares the SELECT statement for the query.
+		 * If select() is being called multiple times, multiple SELECT statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
 		 */
-		select : function(statements){
-			addQueryStatement(statements, 'select');
+		select : function(statement, params){
+			addQueryStatement(statement, params, 'select');
 			return this;
 		},
 		/**
-		 * Declares the from statements for the query.
-		 * If from() is being called multiple times, multiple from statements will be added
-		 * @param statements {Array} array of strings to use in the from statement
-		 * @param statements {String} statement to add in the from statement
+		 * Declares the FROM statement for the query.
+		 * If from() is being called multiple times, multiple FROM statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
 		 */
-		from : function(statements){
-			addQueryStatement(statements, 'from');
+		from : function(statement, params){
+			addQueryStatement(statement, params, 'from');
 			return this;
 		},
 		/**
-		 * Declares the join statements for the query.
-		 * If join() is being called multiple times, multiple join statements will be added
-		 * @param statements {Array} array of strings to use in the join statement
-		 * @param statements {String} statement to add in the join statement
+		 * Declares the JOIN statement for the query.
+		 * If join() is being called multiple times, multiple JOIN statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
 		 */
-		join : function(statements){
-			addQueryStatement(statements, 'join');
+		join : function(statement, params){
+			addQueryStatement(statement, params, 'join');
 			return this;
 		},
 		/**
-		 * Declares the where statements for the query.
-		 * If where() is being called multiple times, multiple where statements will be added
-		 * @param statements {Array} array of strings to use in the where statement
-		 * @param statements {String} statement to add in the where statement
+		 * Declares the WHERE statement for the query.
+		 * If where() is being called multiple times, multiple WHERE statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
 		 */
-		where : function(statements){
-			addQueryStatement(statements, 'where');
+		where : function(statement, params){
+			addQueryStatement(statement, params, 'where');
+			return this;
+		},
+		/**
+		 * Declares the GROUP BY statement for the query.
+		 * If groupBy() is being called multiple times, multiple GROUP BY statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
+		 */
+		groupBy : function(statement, params){
+			addQueryStatement(statement, params, 'groupBy');
+			return this;
+		},
+		/**
+		 * Declares the ORDER BY statement for the query.
+		 * If orderBy() is being called multiple times, multiple ORDER BY statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
+		 */
+		orderBy : function(statement, params){
+			addQueryStatement(statement, params, 'orderBy');
 			return this;
 		},
 		/**
@@ -241,43 +263,63 @@ var tiModel = {
 			return this;
 		},
 		/**
-		 * Declares the select statements for the query.
-		 * If select() is being called multiple times, multiple select statements will be added
-		 * @param statements {Array} array of strings to use in the select statement
-		 * @param statements {String} statement to add in the select statement
+		 * Declares the SELECT statement for the query.
+		 * If select() is being called multiple times, multiple SELECT statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
 		 */
-		select : function(statements){
-			addQueryStatement(statements, 'select');
+		select : function(statement, params){
+			addQueryStatement(statement, params, 'select');
 			return this;
 		},
 		/**
-		 * Declares the from statements for the query.
-		 * If from() is being called multiple times, multiple from statements will be added
-		 * @param statements {Array} array of strings to use in the from statement
-		 * @param statements {String} statement to add in the from statement
+		 * Declares the FROM statement for the query.
+		 * If from() is being called multiple times, multiple FROM statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
 		 */
-		from : function(statements){
-			addQueryStatement(statements, 'from');
+		from : function(statement, params){
+			addQueryStatement(statement, params, 'from');
 			return this;
 		},
 		/**
-		 * Declares the join statements for the query.
-		 * If join() is being called multiple times, multiple join statements will be added
-		 * @param statements {Array} array of strings to use in the join statement
-		 * @param statements {String} statement to add in the join statement
+		 * Declares the JOIN statement for the query.
+		 * If join() is being called multiple times, multiple JOIN statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
 		 */
-		join : function(statements){
-			addQueryStatement(statements, 'join');
+		join : function(statement, params){
+			addQueryStatement(statement, params, 'join');
 			return this;
 		},
 		/**
-		 * Declares the where statements for the query.
-		 * If where() is being called multiple times, multiple where statements will be added
-		 * @param statements {Array} array of strings to use in the where statement
-		 * @param statements {String} statement to add in the where statement
+		 * Declares the WHERE statement for the query.
+		 * If where() is being called multiple times, multiple WHERE statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
 		 */
-		where : function(statements){
-			addQueryStatement(statements, 'where');
+		where : function(statement, params){
+			addQueryStatement(statement, params, 'where');
+			return this;
+		},
+		/**
+		 * Declares the GROUP BY statement for the query.
+		 * If groupBy() is being called multiple times, multiple GROUP BY statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
+		 */
+		groupBy : function(statement, params){
+			addQueryStatement(statement, params, 'groupBy');
+			return this;
+		},
+		/**
+		 * Declares the ORDER BY statement for the query.
+		 * If orderBy() is being called multiple times, multiple ORDER BY statements will be added
+		 * @param statement {String} Select statement
+		 * @param params {String/Array} values to replace inside the statement
+		 */
+		orderBy : function(statement, params){
+			addQueryStatement(statement, params, 'orderBy');
 			return this;
 		},
 		/**
@@ -327,13 +369,22 @@ function fetchRelations(){
 		
 	}
 };
-function addQueryStatement(statements, queryPartName){
+function addQueryStatement(queryPartName, statement, params){
+	var counter = -1;
+	params = [].concat(params); //Make sure params is ALWAYS an Array
+
 	if(!this._queryInfo){
 		console.error(NO_QUERY_ERROR);
 		return false;
 	}
 	!this._queryInfo[queryPartName] && (this._queryInfo[queryPartName] = []);
-	this._queryInfo[queryPartName] = this._queryInfo[queryPartName].concat(statements);
+	
+	statement = statement.replace(/\?/g, function(){
+		counter++;
+		return "'" + params[counter] + "'";
+	});
+	
+	this._queryInfo[queryPartName].push(statement);
 };
 function buildQuery(){
 	var queryInfo = this._queryInfo;
@@ -351,6 +402,12 @@ function buildQuery(){
 	}
 	if(queryInfo.where){
 		query += " WHERE " + queryInfo.where.join(' AND ');
+	}
+	if(queryInfo.orderBy){
+		query += " ORDER BY " + queryInfo.orderBy.join(', ');
+	}
+	if(queryInfo.groupBy){
+		query += " GROUP BY " + queryInfo.groupBy.join(', ');
 	}
 	if(queryInfo.limit != null){
 		query += " LIMIT " + queryInfo.limit;
