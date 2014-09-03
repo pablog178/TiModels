@@ -3,8 +3,8 @@
 		<RightNavButton platform="ios">
 			<Button id="editButton" />
 		</RightNavButton>
-		<TextField id="titleField" class="noteField" />
-		<TextArea id="messageField" />
-		<TextField id="createdField" class="noteField" />
+		<TextField id="titleField" class="noteField" bindField="name" />
+		<TextArea id="messageField" bindField="message" />
+		<TextField id="createdField" class="noteField" bindField="created" format="MM/DD/YYYY" />
 	</Window>
 </Alloy>

@@ -4,11 +4,13 @@ var moment = require('alloy/moment');
 exports.definition = {
 	config: {
 		columns : {
+			title 		: 'TEXT',
 			created 	: 'DATETIME',
 			modified 	: 'DATETIME',
 			title 		: 'TEXT'
 		},
 		defaults : {
+			title 		: '',
 			created 	: new moment(),
 			modified 	: null,
 			title 		: ''

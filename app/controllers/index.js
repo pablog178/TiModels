@@ -1,4 +1,25 @@
+var App = require('core');
+
+$.loginButton.addEventListener('click', loginEvent);
+
 function init(){
-	$.navigationWindow.open();
+	if(OS_IOS){
+		App.navWindow = $.navigationWindow;
+		$.navigationWindow.open();
+	} else {
+		//TODO: open main android window
+	}
+};
+function loginEvent(){
+	var username = $.usernameField.value;
+	var userModel = Alloy.Models.instance('user');
+
+	userModel
+		.set('username', username)
+		.fetch();
+
+
+	App.openWindow('list');
+
 };
 init();
