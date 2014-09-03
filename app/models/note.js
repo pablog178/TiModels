@@ -7,7 +7,10 @@ exports.definition = {
 			title 		: 'TEXT',
 			message 	: 'TEXT',
 			created 	: 'DATETIME',
-			modified 	: 'DATETIME'
+			modified 	: 'DATETIME',
+			// Foreign Keys
+			userID		: 'TEXT',
+			listID 		: 'TEXT'
 		},
 		defaults : {
 			title 		: '',

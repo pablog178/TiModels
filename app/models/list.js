@@ -7,7 +7,9 @@ exports.definition = {
 			title 		: 'TEXT',
 			created 	: 'DATETIME',
 			modified 	: 'DATETIME',
-			title 		: 'TEXT'
+			title 		: 'TEXT',
+			// Foreign Keys
+			userID		: 'TEXT'
 		},
 		defaults : {
 			title 		: '',
@@ -18,7 +20,8 @@ exports.definition = {
 		relations : {
 			'notes' : {
 				type 	: '1:n',
-				model 	: 'note'
+				model 	: 'note',
+				foreignKey : 'listID'
 			}
 		},
 		adapter: {

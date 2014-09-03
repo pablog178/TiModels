@@ -7,7 +7,9 @@ exports.definition = {
 			'username' 	: 'TEXT',
 			'firstName' : 'TEXT',
 			'lastName' 	: 'TEXT',
-			'bornDate' 	: 'DATE'
+			'bornDate' 	: 'DATE',
+			// Foreing Keys
+			'addressID' : 'TEXT'
 		},
 		defaults : {
 			'username' 	: null,
@@ -18,11 +20,18 @@ exports.definition = {
 		relations : {
 			'notes' : {
 				type 	: '1:n',
-				model 	: 'note'
+				model 	: 'note',
+				foreignKey : 'userID'
 			},
 			'lists' : {
 				type 	: '1:n',
-				model 	: 'list'
+				model 	: 'list',
+				foreignKey : 'userID'
+			},
+			'address' : {
+				type : '1:1',
+				model : 'address',
+				foreignKey : 'addressID'
 			}
 		},
 		adapter: {
