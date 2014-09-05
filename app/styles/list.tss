@@ -6,4 +6,7 @@
 '#notesList' : {
 	width : Ti.UI.FILL,
 	height : Ti.UI.FILL
+},
+'#addNoteButton' : {
+	systemButton : Ti.UI.iPhone.SystemButton.ADD
 }

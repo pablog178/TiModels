@@ -13,7 +13,7 @@ exports.definition = {
 			listID 		: 'TEXT'
 		},
 		defaults : {
-			title 		: '',
+			title 		: 'New Note',
 			message 	: '',
 			created 	: new moment(),
 			modified 	: null

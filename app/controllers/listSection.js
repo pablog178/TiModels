@@ -6,8 +6,10 @@ function init () {
 	collection && collection.on('add', addItemEvent);
 	collection.each(function(model){
 		sectionData.push({
-			title : model.get('title'),
-			accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DETAIL
+			properties : {
+				title : model.get('title'),
+				accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DETAIL
+			}
 		});
 	});
 	$.section.headerTitle = args.name;
@@ -16,8 +18,10 @@ function init () {
 };
 function addItemEvent (model, index) {
 	$.section.appendItems([{
-		title : model.get('title'),
-		accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DETAIL
+		properties : {
+			title : model.get('title'),
+			accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DETAIL
+		}
 	}]);
 };
 

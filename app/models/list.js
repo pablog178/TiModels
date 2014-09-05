@@ -12,7 +12,7 @@ exports.definition = {
 			userID		: 'TEXT'
 		},
 		defaults : {
-			title 		: '',
+			title 		: 'New List',
 			created 	: new moment(),
 			modified 	: null,
 			title 		: ''
