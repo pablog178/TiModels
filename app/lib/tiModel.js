@@ -112,7 +112,7 @@ var tiModel = {
 			opts = opts || {};
 			
 			if(this._buildingQuery){
-				opts.query = buildQuery();
+				opts.query = buildQuery.call(this);
 				this._buildingQuery = false;
 				this._queryInfo = {};
 			} else if(opts.select || opts.join || opts.from || opts.where || opts.groupBy || opts.orderBy || opts.limit){
@@ -120,7 +120,7 @@ var tiModel = {
 			}
 
 			var fetchBackbone = Backbone.Model.prototype.fetch.call(this, opts);
-			fetchRelations();
+			fetchRelations.call(this);
 
 			return fetchBackbone;
 		},
@@ -169,7 +169,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		select : function(statement, params){
-			addQueryStatement(statement, params, 'select');
+			addQueryStatement.call(this, statement, params, 'select');
 			return this;
 		},
 		/**
@@ -179,7 +179,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		from : function(statement, params){
-			addQueryStatement(statement, params, 'from');
+			addQueryStatement.call(this, statement, params, 'from');
 			return this;
 		},
 		/**
@@ -189,7 +189,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		join : function(statement, params){
-			addQueryStatement(statement, params, 'join');
+			addQueryStatement.call(this, statement, params, 'join');
 			return this;
 		},
 		/**
@@ -199,7 +199,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		where : function(statement, params){
-			addQueryStatement(statement, params, 'where');
+			addQueryStatement.call(this, statement, params, 'where');
 			return this;
 		},
 		/**
@@ -209,7 +209,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		groupBy : function(statement, params){
-			addQueryStatement(statement, params, 'groupBy');
+			addQueryStatement.call(this, statement, params, 'groupBy');
 			return this;
 		},
 		/**
@@ -219,7 +219,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		orderBy : function(statement, params){
-			addQueryStatement(statement, params, 'orderBy');
+			addQueryStatement.call(this, statement, params, 'orderBy');
 			return this;
 		},
 		/**
@@ -247,7 +247,7 @@ var tiModel = {
 			opts = opts || {};
 			
 			if(this._buildingQuery){
-				opts.query = buildQuery();
+				opts.query = buildQuery.call(this);
 				this._buildingQuery = false;
 				this._queryInfo = {};
 			}
@@ -269,7 +269,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		select : function(statement, params){
-			addQueryStatement(statement, params, 'select');
+			addQueryStatement.call(this, statement, params, 'select');
 			return this;
 		},
 		/**
@@ -279,7 +279,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		from : function(statement, params){
-			addQueryStatement(statement, params, 'from');
+			addQueryStatement.call(this, statement, params, 'from');
 			return this;
 		},
 		/**
@@ -289,7 +289,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		join : function(statement, params){
-			addQueryStatement(statement, params, 'join');
+			addQueryStatement.call(this, statement, params, 'join');
 			return this;
 		},
 		/**
@@ -299,7 +299,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		where : function(statement, params){
-			addQueryStatement(statement, params, 'where');
+			addQueryStatement.call(this, statement, params, 'where');
 			return this;
 		},
 		/**
@@ -309,7 +309,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		groupBy : function(statement, params){
-			addQueryStatement(statement, params, 'groupBy');
+			addQueryStatement.call(this, statement, params, 'groupBy');
 			return this;
 		},
 		/**
@@ -319,7 +319,7 @@ var tiModel = {
 		 * @param params {String/Array} values to replace inside the statement
 		 */
 		orderBy : function(statement, params){
-			addQueryStatement(statement, params, 'orderBy');
+			addQueryStatement.call(this, statement, params, 'orderBy');
 			return this;
 		},
 		/**
@@ -341,16 +341,18 @@ var tiModel = {
 
 
 //Common private functions
-function fetchRelations(){
+function fetchRelations(parent){
+	console.log('[tiModel] - fetchRelations() - ' + this.config.adapter.collection_name);
 	var relations = this.config.relations || {};
 	for(var name in relations){
+		console.log('[tiModel] . fetchRelations() - fetching: ' + name)
 		var relation = relations[name];
 		var foreignKey = relation.foreignKey;
 		
 		switch(relation.type){
 			case '1:1':
-				var idAttribute = model.idAttribute || 'alloy_id';
 				var model = this.get(name);
+				var idAttribute = model.idAttribute || 'alloy_id';
 				
 				model
 					.query()
@@ -369,7 +371,8 @@ function fetchRelations(){
 		
 	}
 };
-function addQueryStatement(queryPartName, statement, params){
+function addQueryStatement(statement, params, queryPartName){
+	console.log('[tiModel] - addQueryStatement() - ' + queryPartName)
 	var counter = -1;
 	params = [].concat(params); //Make sure params is ALWAYS an Array
 
@@ -387,7 +390,9 @@ function addQueryStatement(queryPartName, statement, params){
 	this._queryInfo[queryPartName].push(statement);
 };
 function buildQuery(){
+	console.log('[tiModel] - buildQuery()')
 	var queryInfo = this._queryInfo;
+	Ti.API.info("queryInfo: " + JSON.stringify(queryInfo, null, '\t'));
 	if(!queryInfo){
 		console.error(NO_QUERY_ERROR);
 		return false;
@@ -395,8 +400,8 @@ function buildQuery(){
 	var query = "";
 	var table = this.config.adapter.collection_name;
 
-	query += "SELECT " + queryInfo.select ? queryInfo.select.join(', ') : "*";
-	query += " FROM " + queryInfo.from ? queryInfo.from.join(', ') : table;
+	query += "SELECT " + (queryInfo.select ? queryInfo.select.join(', ') : "*");
+	query += " FROM " + (queryInfo.from ? queryInfo.from.join(', ') : table);
 	if(queryInfo.join){
 		query += " JOIN " + queryInfo.join.join(' ');
 	}
