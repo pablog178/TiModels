@@ -1,5 +1,8 @@
 <Alloy>
 	<Window id="window">
+		<RightNavButton>
+			<Button id="addNoteButton" />
+		</RightNavButton>
 		<ListView id="notesList" />
 	</Window>
 </Alloy>

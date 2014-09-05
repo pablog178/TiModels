@@ -1,40 +1,34 @@
 var App = require('core');
 var args = arguments[0] || {};
-var userModel = Alloy.Models.instance('list');
+var userModel = Alloy.Models.instance('user');
 
 var sections = [];
 var collections = [];
 
 $.notesList.addEventListener('itemclick', notesListClickEvent);
+$.addNoteButton.addEventListener('click', addNoteEvent);
 
 function init () {
+	console.log('[list] - init()');
 	if(args.notesCollection){
 		loadSection(args.notesCollection, args.notesName || '');
 	} else {
-		var listCollection = userModel.get('list');
+		var listCollection = userModel.get('lists');
 		loadSection(listCollection, 'Lists', true);
 
 		var notesCollection = userModel.get('notes');
 		loadSection(notesCollection, 'Notes');
 	}
+	$.notesList.sections = sections;
 };
 function loadSection(collection, name, isList){
-	var sectionData = [];
-	collection.each(function(model){
-		sectionData.push({
-			title : model.get('title'),
-			accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DETAIL
-		});
-	});
-	var listSection = Ti.UI.createListSection({
-		headerTitle : name,
-		items : sectionData,
-		isList : isList || false
+	console.log('[list] - loadSection() - name - ' + name);
+	var listSection = Alloy.createController('listSection', {
+		collection : collection
 	});
 
-	sections.push(listSection);
+	sections.push(listSection.getView());
 	collections.push(collection);
-
 };
 function notesListClickEvent(evt){
 	var sectionIndex = evt.sectionIndex;
@@ -49,6 +43,14 @@ function notesListClickEvent(evt){
 		App.openWindow('note', {
 			noteModel : modelSelected
 		});
+	}
+};
+function addNoteEvent(){
+	var newNoteModel = Alloy.createModel('note');
+	if(args.notesCollection){
+		args.notesCollection.add(newNoteModel);
+	} else {
+		userModel.get('notes').add(newNoteModel);
 	}
 };
 
