@@ -1,6 +1,11 @@
 var args = arguments[0] || {};
 var noteModel = args.noteModel;
 var editMode = false;
+var formElements = [
+	$.titleField,
+	$.messageField,
+	$.createdField
+];
 
 $.editButton.addEventListener('click', editClickEvent);
 
@@ -20,20 +25,18 @@ function editClickEvent(){
 	}
 };
 function updateModel(){
-	var children = $.window.children;
-	for(var i = 0, j = children.length; i < j; i++){
-		var uiElement = children[i];
-		if(uiElement.bindName){
-			noteModel.set(uiElement.bindName, uiElement.value);
+	for(var i = 0, j = formElements.length; i < j; i++){
+		var uiElement = formElements[i];
+		if(uiElement.bindField){
+			noteModel.set(uiElement.bindField, uiElement.value);
 		}
 	}
 };
 function refreshUI(){
-	var children = $.window.children;
-	for(var i = 0, j = children.length; i < j; i++){
-		var uiElement = children[i];
-		if(uiElement.bindName){
-			var value = noteModel.get(bindName);
+	for(var i = 0, j = formElements.length; i < j; i++){
+		var uiElement = formElements[i];
+		if(uiElement.bindField){
+			var value = noteModel.get(uiElement.bindField);
 			uiElement.value = uiElement.format ? value.format(uiElement.format) : value;
 		}
 	}
