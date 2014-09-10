@@ -7,6 +7,11 @@
 var NO_QUERY_ERROR = "No query info for the model. You should call query() before starting query statements";
 var tiModel = {
 	modelBase : {
+		initialize : function(){
+			this._buildingQuery = false;
+			this._queryInfo = {};
+			this._relationParents = [];
+		},
 		/**
 		 * Sets the data based on the model's config.columns info.
 		 * current data types supported:
@@ -21,8 +26,10 @@ var tiModel = {
 		 *
 		 * Other type not named here 				- unchanged				- TEXT (JSON.stringify)
 		 */
-		set : function(values, opts){
-			console.log("[modelBase] - model.set - values: " + JSON.stringify(values) + ' - opts: ' + JSON.stringify(opts));
+		set : function(values, opts, extraOpts){
+			values = parseValues(values, opts);
+			opts = extraOpts || opts || {};
+			console.log('[tiModel - ' + this.config.adapter.collection_name + '] - set() - values: ' + JSON.stringify(values) + ' - opts: ' + JSON.stringify(opts));
 			for(var fieldName in values){
 				var type = this.config.columns[fieldName] ? this.config.columns[fieldName] : '';
 				type = type.split(/\s+/)[0];
@@ -93,7 +100,15 @@ var tiModel = {
 						create = Alloy.createCollection;
 						break;
 				}
-				defaultRelations[name] = create(modelName);
+
+				var relationModel = create(modelName);
+				relationModel._relationParents.push({
+					name : this.config.adapter.collection_name,
+					model : this,
+					type : relation.type,
+					foreignKey : relation.foreignKey
+				});
+				defaultRelations[name] = relationModel;
 			}
 
 			_.extend(defaultValues, defaultRelations);
@@ -109,8 +124,8 @@ var tiModel = {
 		 * the database
 		 */
 		fetch : function(opts){
+			console.log('[tiModel - ' + this.config.adapter.collection_name + '] - fetch()');
 			opts = opts || {};
-			
 			if(this._buildingQuery){
 				opts.query = buildQuery.call(this);
 				this._buildingQuery = false;
@@ -125,34 +140,29 @@ var tiModel = {
 			return fetchBackbone;
 		},
 		save : function(attrs, opts){
-			attrs = attrs || {};
-			opts = opts || {};
-
-			var saveBackbone = Backbone.Model.prototype.save.call(this, attrs, opts);
-
-			var relations = this.config.relations || {};
-			for(var name in relations){
-				var relation = relations[name];
-				var foreignKey = relation.foreignKey;
-				
-				switch(relation.type){
+			var parents = this._relationParents || [];
+			attrs = attrs || {};
+			for(var i = 0, j = parents.length ;  i < j ; i++){
+				var parentInfo = parents[i];
+				var foreignKey = parentInfo.foreignKey;
+				var saveInfo = {};
+				switch(parentInfo.type){
 					case '1:1':
-						opts.saveChildren && this.get(name).save();
-						this.set(foreignKey, model.id);
+						saveInfo[foreignKey] = this.id;
+						parentInfo.model.save(saveInfo);
 						break;
 					case '1:n':
-						var collection = this.get(name);
-						collection.each(function(model){
-							model.set(foreignKey, this.id);
-						});
+						var foreignValue = parentInfo.model.id;
+						saveInfo[foreignKey] = foreignValue;
+						if(!this.has(foreignKey) || this.get(foreignKey) !== foreignValue){
+							attrs[foreignKey] = foreignValue;
+						}
 						break;
 				}
-
-				opts.saveChildren && this.get(name).save();
-				
+				console.log('[tiModel] - save() - parentInfo: ' + JSON.stringify(parentInfo));
 			}
-
-			return saveBackbone;
+			console.log('[tiModel] - save() - attrs : ' + JSON.stringify(attrs));
+			return Backbone.Model.prototype.save.call(this, attrs, opts);
 		},
 		/**
 		 * Initializes the query to be built upon the fetch() function
@@ -238,6 +248,19 @@ var tiModel = {
 		}
 	},
 	collectionBase : {
+		initialize : function(){
+			this._buildingQuery = false;
+			this._queryInfo = {};
+			this._relationParents = [];
+		},
+		add : function(models, opts){
+			var relationParents = _.clone(this._relationParents);
+			var addedModels = Backbone.Collection.prototype.add.call(this, models, opts);
+			addedModels.each(function(model){
+				relationParents && (model._relationParents = model._relationParents.concat(relationParents));
+			});
+			return addedModels;
+		},
 		/**
 		 * Retrieves the collection from SQLite database.
 		 * if the query() function was previously called, it will automatically generate the query
@@ -253,6 +276,24 @@ var tiModel = {
 			}
 
 			return Backbone.Collection.prototype.fetch.call(this, opts);
+		},
+		/**
+		 * Saves all the models inside the collection
+		 */
+		saveAll : function(opts){
+			this.each(function(model){
+				model.save();
+			});
+		},
+		/**
+		 * Sets the same attribute(s) into all the models of this collection
+		 */
+		setAll : function(values, opts, extraOpts){
+			values = parseValues(values, opts);
+			opts = extraOpts || opts || {};
+			this.each(function(model){
+				model.set(values, opts);
+			});
 		},
 		/**
 		 * Initializes the query to be built upon the fetch() function
@@ -341,11 +382,22 @@ var tiModel = {
 
 
 //Common private functions
+function parseValues (values, opts) {
+	if(_.isObject(values)){
+		return values;
+	} else if(_.isString(values)){
+		var result = {};
+		result[values] = opts;
+		return result;
+	} else {
+		return {};
+	}
+};
 function fetchRelations(parent){
-	console.log('[tiModel] - fetchRelations() - ' + this.config.adapter.collection_name);
+	console.log('[tiModel - ' + this.config.adapter.collection_name + '] - fetchRelations()');
 	var relations = this.config.relations || {};
 	for(var name in relations){
-		console.log('[tiModel] . fetchRelations() - fetching: ' + name)
+		console.log('[tiModel - ' + this.config.adapter.collection_name + '] . fetchRelations() - fetching: ' + name)
 		var relation = relations[name];
 		var foreignKey = relation.foreignKey;
 		
@@ -372,7 +424,7 @@ function fetchRelations(parent){
 	}
 };
 function addQueryStatement(statement, params, queryPartName){
-	console.log('[tiModel] - addQueryStatement() - ' + queryPartName)
+	console.log('[tiModel - ' + this.config.adapter.collection_name + '] - addQueryStatement() - ' + queryPartName)
 	var counter = -1;
 	params = [].concat(params); //Make sure params is ALWAYS an Array
 
@@ -390,9 +442,8 @@ function addQueryStatement(statement, params, queryPartName){
 	this._queryInfo[queryPartName].push(statement);
 };
 function buildQuery(){
-	console.log('[tiModel] - buildQuery()')
+	console.log('[tiModel - ' + this.config.adapter.collection_name + '] - buildQuery()')
 	var queryInfo = this._queryInfo;
-	Ti.API.info("queryInfo: " + JSON.stringify(queryInfo, null, '\t'));
 	if(!queryInfo){
 		console.error(NO_QUERY_ERROR);
 		return false;
@@ -420,7 +471,7 @@ function buildQuery(){
 
 	query += ";";
 
-	console.log('[tiModel] - buildQuery() - query: ' + query);
+	console.log('[tiModel - ' + this.config.adapter.collection_name + '] - buildQuery() - query: ' + query);
 
 	return query;
 };
