@@ -4,7 +4,7 @@ var moment = require('alloy/moment');
 exports.definition = {
 	config: {
 		columns : {
-			'username' 	: 'TEXT',
+			'username' 	: 'TEXT UNIQUE',
 			'firstName' : 'TEXT',
 			'lastName' 	: 'TEXT',
 			'bornDate' 	: 'DATE',
@@ -27,11 +27,6 @@ exports.definition = {
 				type 	: '1:n',
 				model 	: 'list',
 				foreignKey : 'userID'
-			},
-			'address' : {
-				type : '1:1',
-				model : 'address',
-				foreignKey : 'addressID'
 			}
 		},
 		adapter: {

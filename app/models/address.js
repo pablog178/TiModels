@@ -5,10 +5,11 @@ exports.definition = {
 			'street' : 'TEXT'
 		},
 		defaults : {
-			'street' : 'Adress 123'
+			'street' : ''
 		},
 		adapter: {
-			collection_name: "address"
+			type 			: "tiModelSync",
+			collection_name : "address"
 		}
 	},
 	extendModel: function(Model) {
