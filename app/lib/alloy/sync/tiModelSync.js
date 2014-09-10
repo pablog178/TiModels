@@ -67,7 +67,10 @@ function Migrator(config, transactionDb) {
             k === this.idAttribute && (found = true);
             columns.push(k + " " + this.column(config.columns[k]));
         }
-        found || this.idAttribute !== ALLOY_ID_DEFAULT || columns.push(ALLOY_ID_DEFAULT + " TEXT UNIQUE");
+        // add the id field if it wasn't specified
+        if (!found && this.idAttribute === ALLOY_ID_DEFAULT) {
+            columns.push(ALLOY_ID_DEFAULT + ' TEXT UNIQUE');
+        }
         var sql = "CREATE TABLE IF NOT EXISTS " + this.table + " ( " + columns.join(",") + ")";
         this.db.execute(sql);
     };
@@ -124,9 +127,6 @@ function Sync(method, model, opts) {
             }
             var names = [], values = [], q = [];
             for (var k in columns) {
-                console.log('name: ' + k);
-                console.log('config: ' + columns[k]);
-                
                 var description = columns[k] || '';
                 var parts = description.split(/\s+/);
                 var type = parts[0];
