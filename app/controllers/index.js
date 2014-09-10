@@ -18,6 +18,7 @@ function loginEvent(){
 		.set('username', username)
 		.fetch();
 
+	userModel.save();
 
 	App.openWindow('list');
 

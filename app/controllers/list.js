@@ -52,6 +52,7 @@ function addNoteEvent(){
 	} else {
 		userModel.get('notes').add(newNoteModel);
 	}
+	newNoteModel.save();
 };
 
 init();
