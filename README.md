@@ -1,8 +1,8 @@
-This library is still on development, please use with caution.
-
 #TiModels
 
 A CommonJS library for adding extra functions to default Alloy models.
+
+This library is still on development, please use with caution.
 
 ##Overview
 ---
