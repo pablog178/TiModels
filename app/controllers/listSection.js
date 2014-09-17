@@ -4,25 +4,28 @@ var sectionData = [];
 
 function init () {
 	collection && collection.on('add', addItemEvent);
-	collection.each(function(model){
-		sectionData.push({
-			properties : {
-				title : model.get('title'),
-				accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DETAIL
-			}
+	collection.each(function(model, index){
+		var item = Alloy.createController('item', {
+			noteModel : model,
+			index : index,
+			onChange : refreshItemEvent
 		});
+		sectionData.push(item.getView());
 	});
 	$.section.headerTitle = args.name;
 	$.section.isList = args.isList;
 	$.section.items = sectionData;
 };
 function addItemEvent (model, index) {
-	$.section.appendItems([{
-		properties : {
-			title : model.get('title'),
-			accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DETAIL
-		}
-	}]);
+	var item = Alloy.createController('item', {
+		noteModel : model,
+		index : index,
+		onChange : refreshItemEvent
+	});
+	$.section.appendItems([ item.getView() ]);
+};
+function refreshItemEvent (evt) {
+	$.section.updateItemAt(evt.index, evt.source.getView());
 };
 
 init();

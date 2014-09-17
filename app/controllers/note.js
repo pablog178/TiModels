@@ -25,12 +25,14 @@ function editClickEvent(){
 	}
 };
 function updateModel(){
+	var updatedValues = {};
 	for(var i = 0, j = formElements.length; i < j; i++){
 		var uiElement = formElements[i];
 		if(uiElement.bindField){
-			noteModel.set(uiElement.bindField, uiElement.value);
+			updatedValues[uiElement.bindField] = uiElement.value;
 		}
 	}
+	noteModel.set(updatedValues);
 };
 function refreshUI(){
 	for(var i = 0, j = formElements.length; i < j; i++){
