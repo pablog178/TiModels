@@ -1,26 +1,29 @@
-var App = require('core');
-
-$.loginButton.addEventListener('click', loginEvent);
+var App 		= require('core');
+var session 	= Alloy.Models.instance('session');
+var userModel 	= Alloy.Models.instance('user');
 
 function init(){
 	if(OS_IOS){
 		App.navWindow = $.navigationWindow;
 		$.navigationWindow.open();
 	} else {
-		//TODO: open main android window
+		$.mainScreen = Alloy.createController('mainScreen');
+		$.mainScreen.open();
+	}
+
+	session.fetch();
+	if(session.get('stayActive')){
+		userModel.login({
+			username : session.get('username'),
+			password : session.get('password'),
+			failure : openLogin
+		});
+	} else {
+		openLogin();
 	}
 };
-function loginEvent(){
-	var username = $.usernameField.value;
-	var userModel = Alloy.Models.instance('user');
-
-	userModel
-		.set('username', username)
-		.fetch();
-
-	userModel.save();
-
-	App.openWindow('list');
-
+function openLogin(){
+	Alloy.createController('login').open();
 };
+
 init();

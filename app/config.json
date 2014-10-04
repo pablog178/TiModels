@@ -1,5 +1,7 @@
 {
-	"global": {}, 
+	"global": {
+		"PROPERTY_USER" : "session:user"
+	}, 
 	"env:development": {}, 
 	"env:test": {}, 
 	"env:production": {}, 

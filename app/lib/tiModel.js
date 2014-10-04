@@ -115,6 +115,15 @@ var tiModel = {
 
 			return defaultValues;
 		},
+		clear : function(opts){
+			opts = opts || {};
+			var useDefaults = opts.defaults != null ? +opts.defaults : true;
+			var clearResult = Backbone.Model.prototype.clear.call(this, opts);
+			if(useDefaults){
+				this.set(this.defaults());
+			}
+			return clearResult;
+		},
 		/**
 		 * Retrieves the model from SQLite database.
 		 * if the idAttribute was previously setted, the query will be automatically generated
