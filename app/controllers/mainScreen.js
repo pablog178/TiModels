@@ -10,7 +10,7 @@ $.notesList.addEventListener('itemclick', notesListClick);
 $.notesList.addEventListener('delete', notesListDelete);
 $.logoutButton.addEventListener('click', handleLogoutClick);
 $.addNoteButton.addEventListener('click', handleAddNoteClick);
-userModel.on('change:loggedIn', onUserModelLoggedInChange);
+userModel.on('change:loggedIn', handleLoginChange);
 
 $.refresh = function(){
 	console.log('[mainScreen] - refresh()');
@@ -24,6 +24,11 @@ $.refresh = function(){
 function init () {
 
 };
+function resetUI () {
+	sectionsControllers = [];
+	sectionsViews = [];
+	$.notesList.sections = sectionsViews;
+}
 function loadSection(collection, name){
 	console.log('[mainScreen] - loadSection() - name - ' + name);
 	var listSection = Alloy.createController('listSection', {
@@ -60,11 +65,11 @@ function notesListDelete (evt) {
 
 	sectionsControllers[sectionIndex].removeItem(itemIndex);
 };
-function onUserModelLoggedInChange (model) {
+function handleLoginChange (model) {
 	if(userModel.get('loggedIn')){
 		$.refresh();
 	} else {
-		
+		resetUI();
 	}
 }
 
