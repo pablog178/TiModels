@@ -1,5 +1,8 @@
 <Alloy>
 	<Window id="window">
+		<LeftNavButton>
+			<Button id="logoutButton" />
+		</LeftNavButton>
 		<RightNavButton>
 			<Button id="addNoteButton" />
 		</RightNavButton>

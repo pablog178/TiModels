@@ -16,7 +16,7 @@ $.close = function(){
 
 function init () {
 	
-}
+};
 function loginEvent(){
 	userModel.login({
 		username : $.usernameField.value,
@@ -26,14 +26,7 @@ function loginEvent(){
 	});
 };
 function handleLoginSuccess (_response) {
-	if($.stayLoggedInSwitch.value){
-		session.set({
-			stayActive : true,
-			username : $.usernameField.value,
-			password : $.passwordField.value
-		}).save();
-	}
-	$.close();
+	$.stayLoggedInSwitch.value && session.start();
 };
 function handleLoginFailure (_response) {
 	if (_response.code === userModel.ERROR_NO_USER){
@@ -41,7 +34,7 @@ function handleLoginFailure (_response) {
 			username : $.usernameField.value,
 			password : $.passwordField.value
 		});
-		$.close();
+
 	} else {
 		$.passwordField.value = '';
 		$.usernameField.focus();

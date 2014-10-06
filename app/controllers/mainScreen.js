@@ -1,5 +1,6 @@
 var App 		= require('core');
 var args 		= arguments[0] || {};
+var session 	= Alloy.Models.instance('session');
 var userModel 	= Alloy.Models.instance('user');
 
 var sectionsControllers = [];
@@ -7,7 +8,8 @@ var sectionsViews 		= [];
 
 $.notesList.addEventListener('itemclick', notesListClick);
 $.notesList.addEventListener('delete', notesListDelete);
-$.addNoteButton.addEventListener('click', addNoteClick);
+$.logoutButton.addEventListener('click', handleLogoutClick);
+$.addNoteButton.addEventListener('click', handleAddNoteClick);
 userModel.on('change:loggedIn', onUserModelLoggedInChange);
 
 $.refresh = function(){
@@ -41,8 +43,12 @@ function notesListClick(evt){
 		noteModel : sectionsControllers[sectionIndex].collection.at(itemIndex)
 	}).open();
 };
-function addNoteClick(){
-	console.log('[mainScreen] - addNoteClick()');
+function handleLogoutClick (_evt) {
+	session.stop();
+	userModel.logout();
+};
+function handleAddNoteClick(){
+	console.log('[mainScreen] - handleAddNoteClick()');
 	var newNoteModel = Alloy.createModel('note');
 	userModel.get('notes').add(newNoteModel);
 	newNoteModel.save();
