@@ -24,6 +24,7 @@ function init () {
 		list = _user;
 	}
 
+	$.tableView.addEventListener('delete', handleTableDelete);
 	$.tableView.addEventListener('click', handleTableClick);
 	$.addButton.addEventListener('click', function(){
 		$.optionDialog.show();
@@ -42,6 +43,20 @@ function addListRow (_model) {
 	});
 	rows.push(_row);
 	$.tableView.appendRow( _row.getView() );
+};
+function handleTableDelete (_evt) {
+	var _index	= _evt.index;
+	var _model	= rows[_index].getModel();
+	
+	if(_model.get('isList')){
+		list.get('lists').remove(_model);
+	} else {
+		list.get('notes').remove(_model);
+	}
+
+	_model.destroy();
+
+	rows.splice(_index, 1);
 };
 function handleTableClick (_evt) {
 	if(_evt.row){
