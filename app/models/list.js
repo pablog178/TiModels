@@ -7,20 +7,25 @@ exports.definition = {
 			title 		: 'TEXT',
 			created 	: 'DATETIME',
 			modified 	: 'DATETIME',
-			title 		: 'TEXT',
 			// Foreign Keys
-			userID		: 'TEXT'
+			userID		: 'TEXT',
+			listID 		: 'TEXT'
 		},
 		defaults : {
 			title 		: 'New List',
 			created 	: new moment(),
 			modified 	: null,
-			title 		: ''
+			isList 		: true
 		},
 		relations : {
 			'notes' : {
 				type 	: '1:n',
 				model 	: 'note',
+				foreignKey : 'listID'
+			},
+			'lists' : {
+				type 	: '1:n',
+				model 	: 'list',
 				foreignKey : 'listID'
 			}
 		},

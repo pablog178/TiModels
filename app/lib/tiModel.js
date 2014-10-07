@@ -276,15 +276,23 @@ var tiModel = {
 		 * based on the given statements.
 		 */
 		fetch : function(opts){
+			console.log('[tiModel - ' + this.config.adapter.collection_name + '] - fetch()');
 			opts = opts || {};
-			
 			if(this._buildingQuery){
 				opts.query = buildQuery.call(this);
 				this._buildingQuery = false;
 				this._queryInfo = {};
+			} else if(opts.select || opts.join || opts.from || opts.where || opts.groupBy || opts.orderBy || opts.limit){
+				//TODO lol
 			}
 
-			return Backbone.Collection.prototype.fetch.call(this, opts);
+			var fetchBackbone = Backbone.Collection.prototype.fetch.call(this, opts);
+
+			this.each(function(model){
+				model.fetch();
+			});
+
+			return fetchBackbone;
 		},
 		/**
 		 * Saves all the models inside the collection
