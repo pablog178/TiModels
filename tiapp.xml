@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><ti:app xmlns:ti="http://ti.appcelerator.org">
 	<id>com.pablog178.timodels</id>
 	<name>TiModels</name>
-	<version>1.0</version>
+	<version>0.1</version>
 	<publisher>not specified</publisher>
 	<url/>
 	<description>not specified</description>
@@ -58,7 +58,7 @@
 		<target device="mobileweb">false</target>
 		<target device="tizen">false</target>
 	</deployment-targets>
-	<sdk-version>3.2.3.GA</sdk-version>
+	<sdk-version>3.3.0.GA</sdk-version>
 <plugins><plugin version="1.0">ti.alloy</plugin>
 </plugins>
 </ti:app>
