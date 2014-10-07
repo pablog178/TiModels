@@ -1,0 +1,8 @@
+<Alloy>
+	<Window id="window">
+		<TextField id="titleField" class="field" />
+		<TextArea id="detailArea" class="field" />
+		<TextField id="createdField" class="field dateField" />
+		<TextField id="modifiedField" class="field dateField" />
+	</Window>
+</Alloy>

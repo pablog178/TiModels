@@ -1,0 +1,16 @@
+<Alloy>
+	<Window id="window">
+		<RightNavButton platform="ios">
+			<Button id="addButton" systemButton="ADD" />
+		</RightNavButton>
+		
+		<TableView id="tableView" />
+	</Window>
+	<OptionDialog id="optionDialog">
+		<Options>
+			<Option>Note</Option>
+			<Option>List</Option>
+			<Option>Cancel</Option>
+		</Options>
+	</OptionDialog>
+</Alloy>

@@ -1,0 +1,43 @@
+'TextField' : {
+	height : 2,
+	paddingLeft : 5,
+	paddingRight : 5
+},
+'#window' : {
+
+},
+'#titleField' : {
+	top : 5,
+	left : 10,
+	right : 10,
+	hintText : 'Title',
+	tag : 'title'
+},
+'#detailArea' : {
+	top : 40,
+	left : 10,
+	right : 10,
+	bottom : 40,
+	tag : 'message'
+},
+'#createdField' : {
+	left : 10,
+	format : 'MM/DD/YYYY',
+	tag : 'created'
+},
+'#modifiedField' : {
+	right : 10,
+	format : 'MM/DD/YYYY',
+	tag : 'modified'
+},
+'.field' : {
+	borderColor : '#202020',
+	borderWidth : 1,
+	font : {
+		fontSize : 13
+	}
+},
+'.dateField' : {
+	bottom : 5,
+	width : '45%'
+}

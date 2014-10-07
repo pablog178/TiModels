@@ -1,7 +1,7 @@
 <Alloy>
 	<NavigationWindow id="navigationWindow" platform="ios">
-		<Require src="main" id="main" />
+		<Require src="list" id="list" />
 	</NavigationWindow>
 
-	<Require src="main" id="main" platform="android" />
+	<Require src="list" id="list" platform="android" />
 </Alloy>

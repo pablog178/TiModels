@@ -1,12 +1,11 @@
-var userModel 	= Alloy.Models.instance('user');
+var App = require('core');
 
 function init(){
-	userModel.fetch();
 	if(OS_IOS){
 		App.navWindow = $.navigationWindow;
 		$.navigationWindow.open();
 	} else {
-		$.main.open();
+		$.list.open();
 	}
 };
 
