@@ -22,6 +22,13 @@ function init () {
 		_user.save();
 		
 		list = _user;
+
+		_user.set('derp', 'derp');
+		_user.get('bornAddr').set('state', 'CA');
+		_user.get('lists').add([
+			{ 'title' : 'derpList' },
+			{ 'title' : 'herpList' }
+		]);
 	}
 
 	$.tableView.addEventListener('delete', handleTableDelete);

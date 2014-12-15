@@ -1,3 +1,5 @@
+var moment = require('alloy/moment');
+
 function S4() {
     return (0 | 65536 * (1 + Math.random())).toString(16).substring(1);
 }

@@ -8,7 +8,8 @@ exports.definition = {
 			'firstName' : 'TEXT',
 			'lastName' 	: 'TEXT',
 			'bornDate' 	: 'DATE',
-			'lastLogin' : 'DATE'
+			'lastLogin' : 'DATE',
+			'bornID'	: 'TEXT'
 		},
 		defaults : {
 			'username' 	: 'default',
@@ -19,14 +20,19 @@ exports.definition = {
 		},
 		relations : {
 			'notes' : {
-				type 	: '1:n',
-				model 	: 'note',
+				type	: '1:n',
+				model	: 'note',
 				foreignKey : 'userID'
 			},
 			'lists' : {
-				type 	: '1:n',
-				model 	: 'list',
+				type	: '1:n',
+				model	: 'list',
 				foreignKey : 'userID'
+			},
+			'bornAddr' : {
+				type	: '1:1',
+				model	: 'address',
+				foreignKey	: 'bornID'
 			}
 		},
 		adapter: {

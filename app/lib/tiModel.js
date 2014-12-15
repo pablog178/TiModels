@@ -4,13 +4,14 @@
  * and extra SQL functions
  */
 
+var moment = require('alloy/moment');
 var NO_QUERY_ERROR = "No query info for the model. You should call query() before starting query statements";
 var tiModel = {
 	modelBase : {
 		initialize : function(){
 			this._buildingQuery = false;
 			this._queryInfo = {};
-			this._relationParents = [];
+			this._parentRelations = {};
 		},
 		/**
 		 * Sets the data based on the model's config.columns info.
@@ -78,6 +79,8 @@ var tiModel = {
 		 * 1:n - defines a new Alloy Collection inside this one
 		 */
 		defaults : function(){
+			var model = this;
+			var myName = this.config.adapter.collection_name;
 			var defaultValues = {
 				'_updated' : 0
 			};
@@ -89,26 +92,46 @@ var tiModel = {
 			var defaultRelations = {};
 			var relations = this.config.relations || {};
 			for(var name in relations){
-				var relation = relations[name];
-				var modelName = relation.model;
-				var create;
+				var child;
+				var relation	= relations[name];
+				var modelName	= relation.model;
 				switch(relation.type){
 					case '1:1':
-						create = Alloy.createModel;
+						var updateModel = function (_model, _newID, _opts) {
+							var relation = _model._parentRelations[myName];
+							console.log('[tiModel - ' + this.config.adapter.collection_name + '] - updateModel()');
+							model.set(relation.foreignKey, _newID);
+						};
+						child = Alloy.createModel(modelName);
+						child._parentRelations[myName] = relation;
+						var childID = child.idAttribute || 'alloy_id';
+						child.on('change:' + childID, updateModel);
 						break;
 					case '1:n':
-						create = Alloy.createCollection;
+						var updateChildren = function (_model, _newID, _opts) {
+							console.log('[tiModel - ' + this.config.adapter.collection_name + '] - updateChildren()');
+							var _relations = this.config.relations || {};
+							for(var _name in _relations){
+								var _relation = _relations[_name];
+								if(_relation.type === '1:n'){
+									var children = this.get(_name);
+									children.each( function (child) {
+										child.set(_relation.foreignKey, _newID);
+									} );
+								}
+							}
+						};
+
+						var updateChild = function(_model, _collection, opts){
+							_model.set(relation.foreignKey, this.id);
+						};
+						
+						child = Alloy.createCollection(modelName);
+						child.on('add', updateChild);
+						this.on('change', updateChildren);
 						break;
 				}
-
-				var relationModel = create(modelName);
-				relationModel._relationParents.push({
-					name : this.config.adapter.collection_name,
-					model : this,
-					type : relation.type,
-					foreignKey : relation.foreignKey
-				});
-				defaultRelations[name] = relationModel;
+				defaultRelations[name] = child;
 			}
 
 			_.extend(defaultValues, defaultRelations);
@@ -148,30 +171,8 @@ var tiModel = {
 
 			return fetchBackbone;
 		},
-		save : function(attrs, opts){
-			var parents = this._relationParents || [];
-			attrs = attrs || {};
-			for(var i = 0, j = parents.length ;  i < j ; i++){
-				var parentInfo = parents[i];
-				var foreignKey = parentInfo.foreignKey;
-				var saveInfo = {};
-				switch(parentInfo.type){
-					case '1:1':
-						saveInfo[foreignKey] = this.id;
-						parentInfo.model.save(saveInfo);
-						break;
-					case '1:n':
-						var foreignValue = parentInfo.model.id;
-						saveInfo[foreignKey] = foreignValue;
-						if(!this.has(foreignKey) || this.get(foreignKey) !== foreignValue){
-							attrs[foreignKey] = foreignValue;
-						}
-						break;
-				}
-				console.log('[tiModel] - save() - parentInfo: ' + JSON.stringify(parentInfo));
-			}
-			console.log('[tiModel] - save() - attrs : ' + JSON.stringify(attrs));
-			return Backbone.Model.prototype.save.call(this, attrs, opts);
+		destroy : function(opts){
+			return Backbone.Model.prototype.destroy.call(this, opts);
 		},
 		/**
 		 * Initializes the query to be built upon the fetch() function
@@ -260,15 +261,7 @@ var tiModel = {
 		initialize : function(){
 			this._buildingQuery = false;
 			this._queryInfo = {};
-			this._relationParents = [];
-		},
-		add : function(models, opts){
-			var relationParents = _.clone(this._relationParents);
-			var addedModels = Backbone.Collection.prototype.add.call(this, models, opts);
-			addedModels.each(function(model){
-				relationParents && (model._relationParents = model._relationParents.concat(relationParents));
-			});
-			return addedModels;
+			this._parentRelations = {};
 		},
 		/**
 		 * Retrieves the collection from SQLite database.
